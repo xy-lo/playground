@@ -32,7 +32,7 @@ namespace playground
 // 这是因为 blockDim.y=2, 每个 block 有 2 个 warp 负责 N 维度。
 // 64 * 2 = 128。同理，blockDim.z=4, 64 * 4 = 256 (BM)。
 
-#define OFFSET(row, col, stride) ((row) * (stride) + (col))
+//#define OFFSET(row, col, stride) ((row) * (stride) + (col))——放到common.hpp里了
 
 __global__ void mma_4stagev1(const float16_t* __restrict__ A, const float16_t* __restrict__ B, float16_t* __restrict__ C, const int M, const int N, const int K)
 {

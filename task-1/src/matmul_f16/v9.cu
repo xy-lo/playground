@@ -25,7 +25,7 @@ namespace playground
 #define MMA_M_TILES 4 // 保持 Warp Tile M 维度 = 4 * 16 = 64
 #define MMA_N_TILES 8 // Warp Tile N 维度 = 8 * 8 = 64 (wmma是 4 * 16 = 64)
 
-#define OFFSET(row, col, stride) ((row) * (stride) + (col))
+//#define OFFSET(row, col, stride) ((row) * (stride) + (col))——放到common.hpp里了
 
 // using namespace nvcuda; // mma.h 不需要这个
 
