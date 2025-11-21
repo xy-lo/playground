@@ -8,32 +8,22 @@ namespace playground
 {
 
 using namespace nvcuda;
-// A[i][j] 的行主序偏移 (row * stride + col)
-// K 或 N 是矩阵的行跨度（Stride）
-#define OFFSET(row, col, stride) ((row) * (stride) + (col))
 
-// FLOAT4 宏用于 128 位加载/存储，优化内存访问
-// 确保 nvcuda::half 可以安全地转换为 int4
+#define OFFSET(row, col, stride) ((row) * (stride) + (col))
 #define FLOAT4(ptr) (*(int4 *)&(ptr))
 
-
-__global__ void SharedMemoryv2(
-    const half *__restrict__ a,
-    const half *__restrict__ b,
-    half *__restrict__ c,
-    const int M, const int N, const int K) {
-
+__global__ void SharedMemoryv2(const half *__restrict__ a,const half *__restrict__ b,half *__restrict__ c,const int M, const int N, const int K) 
+{
     const int BM = 128;
     const int BN = 256;
     const int BK = 32;
+    const int APAD = 8;
+    const int BPAD = 8;
 
     int bx = blockIdx.x;
     int by = blockIdx.y;
     int tid = threadIdx.x;
     int wid = tid >> 5;
-
-    const int APAD = 8;
-    const int BPAD = 8;
 
     __shared__ half s_a[BM][BK + APAD];
     __shared__ half s_b[BK][BN + BPAD];
@@ -144,9 +134,7 @@ PLAYGROUND_MATMUL_DEC(float16_t, 4, m, n, k, A, B, C)
     dim3 block(256);
     dim3 grid((n + 256 - 1) / 256, (m + 128 - 1) / 128, 1);
 
-    SharedMemoryv2<<<grid, block>>>(reinterpret_cast<const half *>(A),
-                                     reinterpret_cast<const half *>(B),
-                                     reinterpret_cast<half *>(C), m, n, k);
+    SharedMemoryv2<<<grid, block>>>( A, B, C, m, n, k);
 }
 
 }  // namespace playground

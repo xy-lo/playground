@@ -218,11 +218,7 @@ PLAYGROUND_MATMUL_DEC(float16_t, 6, m, n, k, A, B, C)
     cudaFuncSetAttribute(TripleBufferv1, cudaFuncAttributeMaxDynamicSharedMemorySize, 98304);
     unsigned int dsmem = 3 * (BM * (BK + APAD) + BK * (BN + BPAD)) * sizeof(half);
 
-    TripleBufferv1<<<gridDim, blockDim, dsmem>>>(
-        reinterpret_cast<const half *>(A),
-        reinterpret_cast<const half *>(B),
-        reinterpret_cast<half *>(C),
-        m, n, k);
+    TripleBufferv1<<<gridDim, blockDim, dsmem>>>( A, B, C, m, n, k);
 }
 
 }  // namespace playground

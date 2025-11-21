@@ -214,11 +214,7 @@ PLAYGROUND_MATMUL_DEC(float16_t, 5, m, n, k, A, B, C)
     // 计算动态共享内存大小
     unsigned int dsmem = 2 * (BM * (BK + APAD) + BK * (BN + BPAD)) * sizeof(half);
 
-    DoubleBuffer<<<gridDim, blockDim, dsmem>>>(
-        reinterpret_cast<const half *>(A),
-        reinterpret_cast<const half *>(B),
-        reinterpret_cast<half *>(C),
-        m, n, k);
+    DoubleBuffer<<<gridDim, blockDim, dsmem>>>( A, B, C, m, n, k);
 }
 
 }  // namespace playground
